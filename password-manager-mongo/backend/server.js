@@ -1,22 +1,22 @@
 const express = require('express')
+const dotenv = require('dotenv')
 const { MongoClient } = require('mongodb');
 const bodyparser = require("body-parser")
 const cors = require("cors")
-const dotenv = require('dotenv')
 dotenv.config()
 
 // Connection URL
-const url = 'mongodb://localhost:27017';
+const url = process.env.MONGO_URI;
 const client = new MongoClient(url);
+client.connect();
 
 // Database Name
-const dbName = 'password-manager';
+const dbName = process.env.DB_NAME;
 const app = express()
 const port = 3000
 app.use(bodyparser.json())
 app.use(cors())
 
-client.connect();
 
 //get all the passwords
 app.get('/', async (req, res) => {

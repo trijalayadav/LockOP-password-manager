@@ -1,7 +1,7 @@
-import React from 'react'
-import { useRef, useState, useEffect } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 import { ToastContainer, toast } from 'react-toastify'
 import { v4 as uuidv4 } from 'uuid';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Manager = () => {
     const ref = useRef()
@@ -10,11 +10,25 @@ const Manager = () => {
     const [passwordArray, setpasswordArray] = useState([])
     useEffect(() => {
         let passwords = localStorage.getItem("passwords")
-        let passwordArray
+        // let passwordArray
         if (passwords) {
             setpasswordArray(JSON.parse(passwords))
         }
     }, [])
+
+    const copytext = (e) => {
+        toast('Copied to clipboard', {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+        });
+        navigator.clipboard.writeText(e)
+    }
 
     const ShowPassword = () => {
         // console.log(ref.current.src);
@@ -27,7 +41,7 @@ const Manager = () => {
         }
     }
     const SavePassword = () => {
-        if (form.site.length > 3 && form.username.length > 3 && form.password.length > 3) {
+        if ((form.site.length > 3) && (form.username.length > 3) && (form.password.length > 3)) {
             setpasswordArray([...passwordArray, { ...form, id: uuidv4() }])
             localStorage.setItem("passwords", JSON.stringify([...passwordArray, { ...form, id: uuidv4() }]))
             setform({ site: "", username: "", password: "" })
@@ -35,7 +49,7 @@ const Manager = () => {
                 position: "top-right",
                 autoClose: 5000,
                 hideProgressBar: false,
-                closeOnClick: false,
+                closeOnClick: true,
                 pauseOnHover: true,
                 draggable: true,
                 progress: undefined,
@@ -43,7 +57,7 @@ const Manager = () => {
             });
         }
         else {
-            // toast('Password not saved!')
+            toast('Error:Password not saved!')
         }
 
     }
@@ -51,13 +65,13 @@ const Manager = () => {
         let c = confirm("Do you really want to delete this password?")
         if (c) {
             setpasswordArray(passwordArray.filter(item => item.id != id))
-            localStorage.setItem("passwords", JSON.stringify(passwordArray.filter(item => item.id != id)))
+            localStorage.setItem("passwords", JSON.stringify(passwordArray.filter(item => item.id !== id)))
             console.log("deleting password with id: ", id);
             toast('Password deleted', {
                 position: "top-right",
                 autoClose: 5000,
                 hideProgressBar: false,
-                closeOnClick: false,
+                closeOnClick: true,
                 pauseOnHover: true,
                 draggable: true,
                 progress: undefined,
@@ -75,19 +89,6 @@ const Manager = () => {
     }
     const handleChange = (e) => {
         setform({ ...form, [e.target.name]: e.target.value })
-    }
-    const copytext = (e) => {
-        toast('Copied to clipboard', {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: false,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "dark",
-        });
-        navigator.clipboard.writeText(e)
     }
     return (
         <>
